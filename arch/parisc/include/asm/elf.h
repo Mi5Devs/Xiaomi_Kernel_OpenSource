@@ -352,8 +352,4 @@ struct pt_regs;	/* forward declaration... */
 				0x7ff >> (PAGE_SHIFT - 12) : \
 				0x3ffff >> (PAGE_SHIFT - 12))
 
-struct mm_struct;
-extern unsigned long arch_randomize_brk(struct mm_struct *);
-#define arch_randomize_brk arch_randomize_brk
-
 #endif
