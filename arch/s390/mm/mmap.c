@@ -56,7 +56,7 @@ static inline int mmap_is_legacy(void)
 	return sysctl_legacy_va_layout;
 }
 
-static unsigned long mmap_rnd(void)
+unsigned long arch_mmap_rnd(void)
 {
 	if (!(current->flags & PF_RANDOMIZE))
 		return 0;
@@ -66,7 +66,7 @@ static unsigned long mmap_rnd(void)
 
 static unsigned long mmap_base_legacy(void)
 {
-	return TASK_UNMAPPED_BASE + mmap_rnd();
+	return TASK_UNMAPPED_BASE + arch_mmap_rnd();
 }
 
 static inline unsigned long mmap_base(void)
@@ -78,7 +78,7 @@ static inline unsigned long mmap_base(void)
 	else if (gap > MAX_GAP)
 		gap = MAX_GAP;
 	gap &= PAGE_MASK;
-	return STACK_TOP - stack_maxrandom_size() - mmap_rnd() - gap;
+	return STACK_TOP - stack_maxrandom_size() - arch_mmap_rnd() - gap;
 }
 
 #ifndef CONFIG_64BIT

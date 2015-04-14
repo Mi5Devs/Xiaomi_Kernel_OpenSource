@@ -55,7 +55,7 @@ static int mmap_is_legacy(void)
  *
  * To avoid this we can shift the randomness by 1 bit.
  */
-static unsigned long mmap_rnd(void)
+unsigned long arch_mmap_rnd(void)
 {
 	unsigned long rnd = 0;
 
@@ -74,7 +74,7 @@ static unsigned long mmap_base(void)
 	else if (gap > MAX_GAP)
 		gap = MAX_GAP;
 
-	return PAGE_ALIGN(STACK_TOP - gap - mmap_rnd());
+	return PAGE_ALIGN(STACK_TOP - gap - arch_mmap_rnd());
 }
 
 /*
