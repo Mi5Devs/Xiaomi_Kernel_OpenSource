@@ -123,6 +123,8 @@ struct kgsl_iommu_context {
  * @micro_mmu_ctrl: GPU register offset of this glob al register
  * @smmu_info: smmu info used in a5xx preemption
  * @protect: register protection settings for the iommu.
+ * @pagefault_suppression_count: Total number of pagefaults
+ *				 suppressed since boot.
  */
 struct kgsl_iommu {
 	struct kgsl_iommu_context ctx[KGSL_IOMMU_CONTEXT_MAX];
@@ -136,6 +138,7 @@ struct kgsl_iommu {
 	struct kgsl_memdesc smmu_info;
 	unsigned int version;
 	struct kgsl_protected_registers protect;
+	u32 pagefault_suppression_count;
 };
 
 /*
