@@ -2113,6 +2113,12 @@ static int console_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+void emergency_unlock_console(void)
+{
+	if (oops_in_progress && panic_timeout != 0 && console_suspended)
+		resume_console();
+}
+
 /**
  * console_lock - lock the console system for exclusive use.
  *

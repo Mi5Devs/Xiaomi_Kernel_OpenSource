@@ -625,8 +625,23 @@ static void ramoops_register_dummy(void)
 	}
 }
 
+static int ramoops_console_notify(struct notifier_block *this,
+		unsigned long event, void *ptr)
+{
+	pr_emerg("ramoops unlock console ...\n");
+	emergency_unlock_console();
+
+	return 0;
+}
+
+static struct notifier_block ramoop_nb = {
+	.notifier_call = ramoops_console_notify,
+	.priority = INT_MAX,
+};
+
 static int __init ramoops_init(void)
 {
+	atomic_notifier_chain_register(&panic_notifier_list, &ramoop_nb);
 	ramoops_register_dummy();
 	return platform_driver_register(&ramoops_driver);
 }
@@ -637,6 +652,7 @@ static void __exit ramoops_exit(void)
 	platform_driver_unregister(&ramoops_driver);
 	platform_device_unregister(dummy);
 	kfree(dummy_data);
+	atomic_notifier_chain_unregister(&panic_notifier_list, &ramoop_nb);
 }
 module_exit(ramoops_exit);
 

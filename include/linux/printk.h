@@ -218,6 +218,12 @@ static inline void show_regs_print_info(const char *log_lvl)
 }
 #endif
 
+/*
+ * Enables printk() before emergency_restart
+ * if we go into suspend states and run into oops.
+ */
+void emergency_unlock_console(void);
+
 extern asmlinkage void dump_stack(void) __cold;
 
 #ifndef pr_fmt
