@@ -1399,3 +1399,8 @@
 #include "msm-pmcobalt-rpm-regulator.dtsi"
 #include "msmcobalt-regulator.dtsi"
 #include "msmcobalt-camera.dtsi"
+#include "msmcobalt-vidc.dtsi"
+#include "msmcobalt-coresight.dtsi"
+#include "msmcobalt-bus.dtsi"
+#include "msmcobalt-gpu.dtsi"
+#include "msmcobalt-mdss.dtsi"
