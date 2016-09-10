@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2016 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -630,10 +631,7 @@ static void handle_sys_init_done(enum hal_command_response cmd, void *data)
 	core->enc_codec_supported = sys_init_msg->enc_codec_supported;
 	core->dec_codec_supported = sys_init_msg->dec_codec_supported;
 
-	/* This should come from sys_init_done */
-	core->resources.max_inst_count =
-		sys_init_msg->max_sessions_supported ? :
-		MAX_SUPPORTED_INSTANCES;
+	core->resources.max_inst_count = MAX_SUPPORTED_INSTANCES;
 
 	core->resources.max_secure_inst_count =
 		core->resources.max_secure_inst_count ? :
