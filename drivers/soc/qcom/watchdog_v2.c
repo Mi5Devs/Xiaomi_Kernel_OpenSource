@@ -1,4 +1,5 @@
 /* Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2016 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -168,6 +169,11 @@ static int panic_wdog_handler(struct notifier_block *this,
 				wdog_dd->base + WDT0_BITE_TIME);
 		__raw_writel(1, wdog_dd->base + WDT0_RST);
 	}
+
+#ifdef CONFIG_DUMP_ALL_STACKS
+	printk(KERN_INFO "D Status stack trace dump:\n");
+	show_state_filter(TASK_UNINTERRUPTIBLE);
+#endif
 	return NOTIFY_DONE;
 }
 
