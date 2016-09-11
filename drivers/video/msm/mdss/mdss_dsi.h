@@ -423,6 +423,7 @@ struct mdss_dsi_ctrl_pdata {
 	int bklt_max;
 	int new_fps;
 	int pwm_enabled;
+	int on_cmds_tuning;
 	int clk_lane_cnt;
 	bool dmap_iommu_map;
 	bool dsi_irq_line;
