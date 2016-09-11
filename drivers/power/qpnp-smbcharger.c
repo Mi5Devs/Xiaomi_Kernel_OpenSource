@@ -1699,21 +1699,6 @@ static int smbchg_set_fastchg_current_raw(struct smbchg_chip *chip,
 #define DCIN_ACTIVE_PWR_SRC_BIT		BIT(0)
 #define PARALLEL_REENABLE_TIMER_MS	1000
 #define PARALLEL_CHG_THRESHOLD_CURRENT	1800
-static bool smbchg_is_usbin_active_pwr_src(struct smbchg_chip *chip)
-{
-	int rc;
-	u8 reg;
-
-	rc = smbchg_read(chip, &reg,
-			chip->usb_chgpth_base + ICL_STS_2_REG, 1);
-	if (rc < 0) {
-		dev_err(chip->dev, "Could not read usb icl sts 2: %d\n", rc);
-		return false;
-	}
-
-	return !(reg & USBIN_SUSPEND_STS_BIT)
-		&& (reg & USBIN_ACTIVE_PWR_SRC_BIT);
-}
 
 static int smbchg_parallel_usb_charging_en(struct smbchg_chip *chip, bool en)
 {
@@ -2048,11 +2033,19 @@ static bool smbchg_is_parallel_usb_ok(struct smbchg_chip *chip,
 		return false;
 	}
 
+	rc = smbchg_read(chip, &reg,
+			chip->usb_chgpth_base + ICL_STS_2_REG, 1);
+	if (rc < 0) {
+		dev_err(chip->dev, "Could not read usb icl sts 2: %d\n", rc);
+		return false;
+	}
+
 	/*
 	 * If USBIN is suspended or not the active power source, do not enable
 	 * parallel charging. The device may be charging off of DCIN.
 	 */
-	if (!smbchg_is_usbin_active_pwr_src(chip)) {
+	if (!!(reg & USBIN_SUSPEND_STS_BIT) ||
+				!(reg & USBIN_ACTIVE_PWR_SRC_BIT)) {
 		pr_smb(PR_STATUS, "USB not active power source: %02x\n", reg);
 		return false;
 	}
@@ -4044,45 +4037,6 @@ static int smbchg_charging_status_change(struct smbchg_chip *chip)
 	smbchg_vfloat_adjust_check(chip);
 	set_property_on_fg(chip, POWER_SUPPLY_PROP_STATUS,
 			get_prop_batt_status(chip));
-	return 0;
-}
-
-#define BAT_IF_TRIM7_REG	0xF7
-#define CFG_750KHZ_BIT		BIT(1)
-#define BB_CLMP_SEL		0xF8
-#define BB_CLMP_MASK		SMB_MASK(1, 0)
-#define BB_CLMP_VFIX_3338MV	0x1
-#define BB_CLMP_VFIX_3512MV	0x2
-static int smbchg_set_optimal_charging_mode(struct smbchg_chip *chip, int type)
-{
-	int rc;
-	bool hvdcp2 = (type == POWER_SUPPLY_TYPE_USB_HVDCP
-			&& smbchg_is_usbin_active_pwr_src(chip));
-
-	/*
-	 * Set the charger switching freq to 1MHZ if HVDCP 2.0,
-	 * or 750KHZ otherwise
-	 */
-	rc = smbchg_sec_masked_write(chip,
-			chip->bat_if_base + BAT_IF_TRIM7_REG,
-			CFG_750KHZ_BIT, hvdcp2 ? 0 : CFG_750KHZ_BIT);
-	if (rc) {
-		dev_err(chip->dev, "Cannot set switching freq: %d\n", rc);
-		return rc;
-	}
-
-	/*
-	 * Set the charger switch frequency clamp voltage threshold to 3.338V
-	 * if HVDCP 2.0, or 3.512V otherwise.
-	 */
-	rc = smbchg_sec_masked_write(chip, chip->bat_if_base + BB_CLMP_SEL,
-			BB_CLMP_MASK,
-			hvdcp2 ? BB_CLMP_VFIX_3338MV : BB_CLMP_VFIX_3512MV);
-	if (rc) {
-		dev_err(chip->dev, "Cannot set switching freq: %d\n", rc);
-		return rc;
-	}
-
 	return 0;
 }
 
