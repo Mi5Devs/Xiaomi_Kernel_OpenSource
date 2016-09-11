@@ -2,6 +2,6 @@ menu "TouchSense driver support"
 
 config TSPDRV
 	tristate "TouchSense driver support"
-	default y
+	default n
 
 endmenu
