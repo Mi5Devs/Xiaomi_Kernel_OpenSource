@@ -4,6 +4,7 @@
  *
  * Copyright (c) 2008 Google Inc.
  * Copyright (c) 2007-2015, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2016 XiaoMi, Inc.
  * Modified: Nick Pelly <npelly@google.com>
  *
  * All source code in this file is licensed under the following license
@@ -3577,6 +3578,7 @@ static void msm_hs_shutdown(struct uart_port *uport)
 		MSM_HS_WARN("%s: Client clock vote imbalance\n", __func__);
 		atomic_set(&msm_uport->client_req_state, 0);
 	}
+	atomic_set(&msm_uport->client_count, 0);
 	msm_hs_unconfig_uart_gpios(uport);
 	MSM_HS_INFO("%s:UART port closed successfully\n", __func__);
 }
