@@ -10,19 +10,14 @@
  * GNU General Public License for more details.
  */
 
-&slim_msm {
-	tasha_codec {
-		swr_master {
-			compatible = "qcom,swr-wcd";
-			#address-cells = <2>;
-			#size-cells = <0>;
 
-			wsa881x_213: wsa881x@21170213 {
-				compatible = "qcom,wsa881x";
-				reg = <0x00 0x21170213>;
-				qcom,spkr-sd-n-gpio = <&pmi8994_gpios 2 0>;
-			};
+/dts-v1/;
 
-		};
-	};
+#include "msm8996-v3.dtsi"
+#include "gemini-msm8996-mtp.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM 8996 v3 + PMI8994 MTP";
+	compatible = "qcom,msm8996-mtp", "qcom,msm8996", "qcom,mtp";
+	qcom,board-id = <31 0>;
 };
