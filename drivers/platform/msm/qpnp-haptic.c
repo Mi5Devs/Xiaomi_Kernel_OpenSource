@@ -1789,8 +1789,6 @@ static void qpnp_timed_enable_worker(struct work_struct *work)
 	if (!value && !hap->state)
 		return;
 
-	flush_work(&hap->work);
-
 	mutex_lock(&hap->lock);
 
 	if (hap->act_type == QPNP_HAP_LRA &&

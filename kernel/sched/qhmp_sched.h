@@ -1081,6 +1081,12 @@ static inline int sched_cpu_high_irqload(int cpu) { return 0; }
 
 #endif	/* CONFIG_SCHED_HMP */
 
+/* cycle counter based accounting is not available in QHMP. */
+static inline void sched_account_irqstart(int cpu, struct task_struct *curr,
+					  u64 wallclock)
+{
+}
+
 #ifdef CONFIG_SCHED_FREQ_INPUT
 extern void check_for_freq_change(struct rq *rq);
 
@@ -1967,3 +1973,8 @@ static inline u64 irq_time_read(int cpu)
 }
 #endif /* CONFIG_64BIT */
 #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
+
+/*
+ * task_may_not_preempt - check whether a task may not be preemptible soon
+ */
+extern bool task_may_not_preempt(struct task_struct *task, int cpu);
